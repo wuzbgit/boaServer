@@ -1,0 +1,18 @@
+{
+	"eth":	{
+		"option":	"dhcp",
+		"username":	"",
+		"password":	"",
+		"ip":	"192.168.1.3",
+		"gateway":	"192.168.1.1",
+		"netmask":	"255.255.255.0"
+	},
+	"wifi":	{
+		"option":	"dhcp",
+		"username":	"INESA-YJY",
+		"password":	"inesayjy",
+		"ip":	"127.0.0.1",
+		"gateway":	"inesayjy",
+		"netmask":	"127.0.0.1"
+	}
+}

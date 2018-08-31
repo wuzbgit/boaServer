@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <!-- Bootstrap Styles-->
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="assets/css/custom-styles.css" rel="stylesheet" />
+<script>
+function getCookie(cname)
+{
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) 
+  {
+    var c = ca[i].trim();
+    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+  return "";
+}
+function delCookie(name)
+{
+	var exp = new Date();
+	exp.setTime(exp.getTime() - 1);
+	var cval=getCookie(name);
+	if(cval!=null)
+	document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+}
+function logout()
+{
+	delCookie("SSID");
+	window.location.href="index.html";
+}
+function clearStatus()
+{
+	$("#static_eth_status").text("");
+	$("#static_wifi_status").html("");
+}
+function isValidIP(ip)   
+{   
+    var reg =  /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/   
+    return reg.test(ip);   
+}  
+
+function config_eth()
+{
+	var type=$('input:radio[name="optionsRadiosEth"]:checked').val();
+	var ret = 0;
+	var formdata = $("#form_eth_cfg").serialize();//$('#form_eth_cfg').serialize();
+	if(type=='static')
+	{
+		ip = $("#eth_ip").val();
+		gw = $("#eth_gw").val();
+		nm = $("#eth_nm").val();
+		var is_ip = isValidIP(ip);
+		var is_gw = isValidIP(gw);
+		var is_nm = isValidIP(nm);
+		if(is_ip&&is_gw&&is_nm)
+		{
+			ret = 1;
+		}
+		else
+		{
+			$("#static_eth_status").html("invalid ip,retry!");
+			return;
+		}
+	}
+	else
+		ret = 2;
+
+	if(ret != 0)
+	{
+		$.ajax({
+				url: "cgi-bin/eth_config.cgi" ,
+				type: "POST",
+                data: $('#form_eth_cfg').serialize(),
+                success: function (result){
+					var objs = JSON.parse(result);
+					if(objs.status == 0)
+					{
+						$("#static_eth_status").text("配置成功，重启生效");
+					}
+					else if(objs.status == -2)
+					{
+						window.location.href="index.html";
+					}
+					else
+					{
+						$("#static_eth_status").text("配置网络失败:无效选项或参数");
+					}
+					window.setTimeout("clearStatus()",3000);
+                },
+                error : function() {
+                    $("#static_eth_status").text("配置网络失败");
+					window.setTimeout("clearStatus()",3000);
+                }
+            });
+	}		
+}
+function config_wifi()
+{
+	var formdata = $('#form_wifi_cfg').serialize();
+	console.log(formdata);
+	$.ajax({
+				url: "cgi-bin/wifi_config.cgi" ,
+				type: "POST",
+                data: $('#form_wifi_cfg').serialize(),
+                success: function (result){
+					var objs = JSON.parse(result);
+					if(objs.status == 0)
+					{
+						$("#static_wifi_status").text("配置成功，重启生效");
+					}
+					else if(objs.status == -2)
+					{
+						window.location.href="index.html";
+					}
+					else
+					{
+						$("#static_wifi_status").text("配置网络失败:无效选项或参数");
+					}
+					window.setTimeout("clearStatus()",3000);
+                },
+                error : function() {
+                    $("#static_wifi_status").text("配置网络失败");
+					window.setTimeout("clearStatus()",3000);
+                }
+            });	
+}
+function get_netconfig()
+{
+	$.ajax({
+		url:"cgi-bin/get_netconfig.cgi",
+		type:"POST",
+		success:function(result){
+			var objs = JSON.parse(result);
+			$("#eth_ip").val(objs.eth_ip);
+			$("#eth_gw").val(objs.eth_gw);
+			$("#eth_nm").val(objs.eth_nm);
+			$("#wifi_username").val(objs.wifi_username);
+			$("#wifi_password").val(objs.wifi_password);
+			var eth_option = objs.eth_option;
+			if(eth_option == "static")
+				$("input:radio[value='static']").attr('checked','true');
+			else if(eth_option == "dhcp")
+				$("input:radio[value='dhcp']").attr('checked','true');
+		},
+		error:function(){
+			$("#eth_ip").val("");
+			$("#eth_gw").val("");
+			$("#eth_nm").val("");
+			$("#wifi_username").val("");
+			$("#wifi_password").val("");
+			$("input:radio[value='dhcp']").attr('checked','true');
+			$("input:radio[value='static']").attr('checked','false');
+		}
+	});
+}
+window.onload=function (){
+	get_netconfig();
+}
+</script>     
+</head>
+
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-default top-navbar" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand"><i class="fa fa-gear"></i> <strong>INESA</strong></a>
+            </div>
+
+            <ul class="nav navbar-top-links navbar-right">
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="index.html"><i class="fa fa-user fa-fw"></i> LogIn</a>
+                        </li>
+                        <li><a onclick="logout()"><i class="fa fa-gear fa-fw"></i> Logout</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="cgi-bin/reset.cgi"><i class="fa fa-sign-out fa-fw"></i> Reboot</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+        </nav>
+        <!--/. NAV TOP  -->
+        <nav class="navbar-default navbar-side" role="navigation">
+		<div id="sideNav" href=""><i class="fa fa-caret-right"></i></div>
+            <div class="sidebar-collapse">
+                <ul class="nav" id="main-menu">
+
+                    <li>
+                        <a href="home.html"><i class="fa fa-dashboard"></i>网关状态</a>
+                    </li>
+                    <li>
+                        <a href="ui-firmware.html"><i class="fa fa-desktop"></i>系统固件</a>
+                    </li>
+					<li>
+                        <a class="active-menu"><i class="fa fa-bar-chart-o"></i>网络配置</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-sitemap"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="#">Second Level Link</a>
+                            </li>
+                            <li>
+                                <a href="#">Second Level Link</a>
+                            </li>
+                            <li>
+                                <a href="#">Second Level Link<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li>
+                                        <a href="#">Third Level Link</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Third Level Link</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Third Level Link</a>
+                                    </li>
+
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="empty.html"><i class="fa fa-fw fa-file"></i> Empty Page</a>
+                    </li>
+                </ul>
+
+            </div>
+
+        </nav>
+        <!-- /. NAV SIDE  -->
+        <div id="page-wrapper" >
+            <div id="page-inner">
+              <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+									<h1 class="page-header">
+                            				有线网配置
+                        			</h1>
+                                    <form role="form" id="form_eth_cfg" action="">
+                                        <div class="form-group">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadiosEth" value="dhcp" checked="true">DHCP Enable
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadiosEth" value="static">STATIC Enable
+                                            </label>
+                                        </div>
+											
+                                        <div class="form-group input-group">
+                                            <span class="input-group-addon">Address</span>
+                                            <input type="text" class="form-control" id="eth_ip" name="eth_ip" valu="192.168.1.3">
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <span class="input-group-addon">Gateway</span>
+                                            <input type="text" class="form-control" id="eth_gw" name="eth_gw" valu="192.168.1.1">
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <span class="input-group-addon">Netmask</span>
+                                            <input type="text" class="form-control" id="eth_nm" name="eth_nm" valu="255.255.255.0">
+                                        </div>
+                                        <div class="form-group">
+                                            <p class="form-control-static" id="static_eth_status" style="color:red"></p>
+                                        </div>
+                                 	</form>
+									<button type="submit" onclick="config_eth()" class="btn btn-default">确定</button>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                                <div class="col-lg-6">
+                                    <h1 class="page-header">
+                            				无线网配置
+                        			</h1>
+                                    <form role="form" id="form_wifi_cfg" action="">
+                                        <div class="form-group input-group">
+                                            <label class="radio-inline">                                                
+												<input type="radio" style="visibility:hidden;">
+                                            </label>
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <span class="input-group-addon">Username</span>
+                                            <input type="text" class="form-control" id="wifi_username" name="wifi_username" value="Username">
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <input type="text" class="form-control" style="visibility:hidden;">
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <span class="input-group-addon">Password</span>
+                                            <input type="text" class="form-control" id="wifi_password" name="wifi_password" value="Password">
+                                        </div>
+                                        <div class="form-group">
+                                            <p class="form-control-static" id="static_wifi_status" style="color:red"></p>
+                                        </div>
+                                    </form>
+									<button type="submit" onclick="config_wifi()" class="btn btn-default">确定</button>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+             <!-- /. PAGE INNER  -->
+            </div>
+         <!-- /. PAGE WRAPPER  -->
+        </div>
+     <!-- /. WRAPPER  -->
+    <!-- JS Scripts-->
+    <!-- jQuery Js -->
+
+    <!-- JS Scripts-->
+    <!-- jQuery Js -->
+    <script src="assets/js/jquery-1.10.2.js"></script>
+    <!-- Bootstrap Js -->
+    <script src="assets/js/bootstrap.min.js"></script>
+	 
+    <!-- Metis Menu Js -->
+    <script src="assets/js/jquery.metisMenu.js"></script>
+
+	
+    <!-- Custom Js -->
+    <script src="assets/js/custom-scripts.js"></script>
+    
+   
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+	"root_path":"/opt/",
+	"u-boot.imx":
+	{
+		"filename":"u-boot.bin",
+		"src_path":"/opt/",
+		"dst_path":"/tmp/",
+		"version":"v1.0",
+		"max_size":5242880
+	},	
+	"zImage":
+	{
+		"filename":"zImage",
+		"src_path":"/opt/",
+		"dst_path":"/tmp/",
+		"version":"v.10",
+		"max_size":20971520
+	}
+}

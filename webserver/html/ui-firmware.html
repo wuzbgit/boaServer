@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+	<!-- Bootstrap Styles-->
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+     <!-- FontAwesome Styles-->
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+        <!-- Custom Styles-->
+    <link href="assets/css/custom-styles.css" rel="stylesheet" />
+     <!-- Google Fonts-->
+    <!-- JS Scripts-->
+    <!-- jQuery Js -->
+<script src="assets/js/jquery-1.10.2.js"></script>
+<!-- Bootstrap Js -->
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- Metis Menu Js -->
+<script src="assets/js/jquery.metisMenu.js"></script>
+      <!-- Custom Js -->
+<script src="assets/js/custom-scripts.js"></script>
+<script>
+function getCookie(cname)
+{
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) 
+  {
+    var c = ca[i].trim();
+    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+  return "";
+}
+function delCookie(name)
+{
+	var exp = new Date();
+	exp.setTime(exp.getTime() - 1);
+	var cval=getCookie(name);
+	if(cval!=null)
+	document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+}
+function logout()
+{
+	delCookie("SSID");
+	window.location.href="index.html";
+}
+</script>
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-default top-navbar" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand"><i class="fa fa-gear"></i> <strong>INESA</strong></a>
+            </div>
+
+            <ul class="nav navbar-top-links navbar-right">
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="index.html"><i class="fa fa-user fa-fw"></i> LogIn</a>
+                        </li>
+                        <li><a onclick="logout()"><i class="fa fa-gear fa-fw"></i> Logout</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="cgi-bin/reset.cgi"><i class="fa fa-sign-out fa-fw"></i> Reboot</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+        </nav>
+        <!--/. NAV TOP  -->
+        <nav class="navbar-default navbar-side" role="navigation">
+		<div id="sideNav" href=""><i class="fa fa-caret-right"></i></div>
+            <div class="sidebar-collapse">
+                <ul class="nav" id="main-menu">
+
+                    <li>
+                        <a href="home.html"><i class="fa fa-dashboard"></i>网关状态</a>
+                    </li>
+                    <li>
+                        <a class="active-menu"><i class="fa fa-desktop"></i>系统固件</a>
+                    </li>
+					<li>
+                        <a href="ui-netconfig.html"><i class="fa fa-bar-chart-o"></i>网络配置</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-sitemap"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="#">Second Level Link</a>
+                            </li>
+                            <li>
+                                <a href="#">Second Level Link</a>
+                            </li>
+                            <li>
+                                <a href="#">Second Level Link<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li>
+                                        <a href="#">Third Level Link</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Third Level Link</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Third Level Link</a>
+                                    </li>
+
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="empty.html"><i class="fa fa-fw fa-file"></i> Empty Page</a>
+                    </li>
+                </ul>
+
+            </div>
+
+        </nav>
+        <!-- /. NAV SIDE  -->
+        <div id="page-wrapper" >
+            <div id="page-inner">	
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-heading" align="center">
+				 				固件版本
+							</div> 
+							<div class="panel-body"> 
+								<form role="form" >
+                                	<div class="form-group input-group">
+                                            <span class="input-group-addon">bootloader版本</span>
+                                            <input type="text" class="form-control" id=boot_version readonly="readonly" placeholder="unkown">
+                                	</div>  
+                                	<div class="form-group input-group">
+                                            <span class="input-group-addon">kernel版本</span>
+                                            <input type="text" class="form-control" id=kernel_version readonly="readonly" placeholder="unkown">
+                                	</div> 
+                                	<div class="form-group input-group">
+                                            <span class="input-group-addon">app版本</span>
+                                            <input type="text" class="form-control" id=app_version readonly="readonly" placeholder="unkown">
+                                	</div>      
+								</form>
+							</div>
+						</div>
+					</div>	
+				</div>												
+				<!-- /. ROW  -->			
+				<div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                        	<div class="panel-heading" align="center">
+                            	本地升级 
+                        	</div>
+							<div class="panel-body">
+    							<!--<form role="form" action="${pageContext.request.contextPath }/upload" enctype="multipart/form-data" method="post">-->
+								<form role="form" action="" enctype="multipart/form-data" method="post">
+									<div class="form-group">
+										<input type="file" id="firmware" name="firmware">
+									</div>
+									 
+									<div class="form-group">
+										<p class="form-control-static" id="info"></p>
+									</div> 		
+									<div class="form-group">
+										<p class="form-control-static" id="result"></p>
+									</div> 							
+    							</form>
+								<button type="submit" onclick="upload()" class="btn btn-default">更新程序</button>
+								<!-- <button type="submit" onclick="upload()" class="btn btn-default">更新程序</button><br>-->
+								<div class="progress progress-striped active" id="progress">
+  									<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+
+  									</div>
+								</div>
+                            </div>
+						</div>
+                    </div>
+					<!-- /. col-md-6  -->
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                        	<div class="panel-heading" align="center">
+                            	OTA升级
+                        	</div>
+                       
+                        	<div class="panel-body">
+								<form role="form">
+									<div class="checkbox">
+                                    	<label>
+                                    		<input type="checkbox" value="">enable
+                                 		</label>
+									</div>
+									<div class="form-group input-group">
+										<span class="input-group-addon">服务器地址</span>
+										<input type="text" class="form-control" id="server_address" placeholder="127.0.0.1">
+                                    </div>
+									<div class="form-group input-group">
+										<span class="input-group-addon">用户名</span>
+											<input type="text" class="form-control" id="server_username" placeholder="username">
+									</div>
+									<div class="form-group input-group">
+										<span class="input-group-addon">Password</span>
+										<input type="text" class="form-control" placeholder="Username">
+									</div>
+									<button type="submit" class="btn btn-default">更新服务器配置</button>
+								</form>
+                            </div>
+						</div>
+                    </div>
+					<!-- /. col-md-6  -->
+                </div>
+                 <!-- /. ROW  -->	
+			</div>
+             <!-- /. PAGE INNER  -->
+            </div>
+         <!-- /. PAGE WRAPPER  -->
+        </div>
+     <!-- /. WRAPPER  -->
+
+<script>  
+        var totalSize = 0;  
+          
+ 
+        $(':file').change(function() {  
+            var file = this.files[0]; 
+            name = file.name;  
+            size = file.size;  
+            type = file.type;  
+            url = window.URL.createObjectURL(file); 
+              
+            totalSize += size;  
+            $("#info").html("文件名：" + name + "<br>文件类型：" + type + "<br>文件大小：" + size);  
+			$("#result").html("");
+              
+        });  
+        function upload() {  
+			if(getCookie("SSID") == "")
+			{
+				window.alert("权限不足,请登录");
+				return;
+			}
+			var firm = $("#firmware").get(0).files[0];
+			if(firm == undefined)
+				return false;
+  			var formData = new FormData();
+  			formData.append("file" , firm);  
+            
+            $.ajax({  
+                url: "cgi-bin/upload.cgi",  
+                type: "POST",  
+				async: true, 
+                data: formData, 
+                xhr: function(){ 
+                  
+                    myXhr = $.ajaxSettings.xhr();  
+                    if(myXhr.upload){ 
+                        myXhr.upload.addEventListener('progress',progressHandlingFunction, false);   
+                    }  
+                    return myXhr; 
+                },  
+                success: function(result){  
+					var objs = JSON.parse(result);
+					if(objs.status == 0)
+					{
+						var str = "Sucess:" + objs.filename +" has been uploaded";
+						$("#result").html(str);
+					}
+					else if(objs.status == -2)
+					{
+						window.location.href="index.html";
+					}
+					else
+					{
+						$("#result").html("Faild:fail to upload");
+					}
+//                    $("#result").html(objs.status);  
+                },  
+                contentType: false, //必须false才会自动加上正确的Content-Type  
+                processData: false  //必须false才会避开jQuery对 formdata 的默认处理  
+            });  
+        }         
+      
+ 
+        function progressHandlingFunction(e) {  
+            if (e.lengthComputable) {  
+                $('#progress').attr({value : e.loaded, max : e.total}); //更新数据到进度条  
+                var percent = e.loaded/e.total*100; 
+ 
+//				$("#progress").html( percent +"%" );
+  				$("#progress").css("width" , percent +"%");
+
+//                $('#progress').html(e.loaded + "/" + e.total+" bytes. " + percent.toFixed(2) + "%");  
+//                $('#progress').css('width', percent.toFixed(2) + "%");
+
+            }  
+        }  
+</script> 
+</body>
+</html>
